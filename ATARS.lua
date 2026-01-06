@@ -1303,8 +1303,13 @@ local script = G2L["6e"];
 			return
 		end
 	
-		local decoded = HttpService:JSONDecode(res.Body)
-	
+		local decoded
+local ok, err = pcall(function()
+	print("Resposta bruta do servidor:")
+	print(res.Body)
+	decoded = HttpService:JSONDecode(res.Body)
+end)
+
 		if decoded.success then
 			StatusLabel.Text = "Dias restantes: " .. decoded.daysLeft
 			script.Parent.Visible = false
