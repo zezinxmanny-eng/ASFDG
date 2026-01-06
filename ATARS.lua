@@ -1275,13 +1275,14 @@ local script = G2L["6e"];
 	local Button = script.Parent.oka
 	local TextBox = script.Parent.inputi
 	local StatusLabel = script.Parent.statusLabel
-	
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer
+	local USER_ID = player.UserId
 	local HttpService = game:GetService("HttpService")
 	local request = request or http_request or syn and syn.request
 	
 	local URL = "https://apd-od3o0a.onrender.com/check"
 	local HWID = "E4806886D8D7EAD4500644FB2C7909" -- fixo (ok por enquanto)
-	
 	local function checkKey(key)
 		StatusLabel.Text = "Verificando..."
 	
@@ -1293,7 +1294,7 @@ local script = G2L["6e"];
 			},
 			Body = HttpService:JSONEncode({
 				key = key,
-				hwid = HWID
+				userId = USER_ID
 			})
 		})
 	
@@ -1301,21 +1302,20 @@ local script = G2L["6e"];
 			StatusLabel.Text = "Erro de conexão"
 			return
 		end
-		print("STATUS:", res.StatusCode)
-		print("BODY:", res.Body)
 	
 		local decoded = HttpService:JSONDecode(res.Body)
 	
 		if decoded.success then
 			StatusLabel.Text = "Dias restantes: " .. decoded.daysLeft
+			script.Parent.Visible = false
 			script.Parent.Parent.Frame.Visible = true
 			script.Parent.Parent.Frame.ata.Frame.dys.Text = tostring(decoded.daysLeft)
-			print("Key válida")
+			StatusLabel.Text = "Dias restantes: " .. decoded.daysLeft
 		else
 			StatusLabel.Text = decoded.message
-			warn("Falhou:", decoded.message)
 		end
 	end
+	
 	
 	Button.MouseButton1Click:Connect(function()
 		local key = TextBox.Text
